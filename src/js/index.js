@@ -31,7 +31,11 @@ async function showMore() {
 
 async function getImages() {
   const images = await searchImages.fetchImages();
+  console.log("getImages -> images.hits.length", images.hits.length);
   appendImages(images.hits);
+  if (images.hits.length === 0) {
+    refs.imagesList.innerHTML = "Изображения не найдены";
+  }
   if (images.hits.length < searchImages.perPage) {
     showMoreDisable();
     return;

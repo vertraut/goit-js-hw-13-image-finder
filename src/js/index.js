@@ -1,6 +1,7 @@
 import ApiServices from "./api-services";
 import refs from "./refs";
 import imagesHbs from "../tamplate/images.hbs";
+import * as basicLightbox from "basiclightbox";
 
 const searchImages = new ApiServices();
 
@@ -13,22 +14,32 @@ function addEvents() {
 
 function newSearch(e) {
   e.preventDefault();
-  showMoreVisible();
-  clearMakrup();
+  showMoreDisable(); //чтобы кнеопка "показать больше" была скрыта при повтором поиске
+  clearMakrup(); // удаляем старые результаты поиска
   searchImages.numPage = 1;
   searchImages.searchQuery = refs.inputQuery.value;
   console.log("Поиск картинок по запросу", searchImages.searchQuery);
-  searchImages.fetchImages().then(appendImages);
+  searchImages.fetchImages().then(appendImages).then(showMoreEnable);
 }
 
 function showMore() {
   searchImages.numPage += 1;
   console.log(searchImages.page);
-  searchImages.fetchImages().then(appendImages);
+  const heigthToScroll = refs.imagesList.clientHeight; //запоминаем высоту списка с картинками до добавления новых
+  searchImages
+    .fetchImages()
+    .then(appendImages)
+    .then(() => {
+      scroll(heigthToScroll); //скролим на начало новых картинок
+    });
 }
 
-function showMoreVisible() {
-  refs.showMoreWrapper.classList.toggle("hidden");
+function showMoreEnable() {
+  refs.showMoreWrapper.classList.remove("hidden");
+}
+
+function showMoreDisable() {
+  refs.showMoreWrapper.classList.add("hidden");
 }
 
 function clearMakrup() {
@@ -39,4 +50,11 @@ function appendImages(images) {
   console.log(images.hits);
   const makrup = imagesHbs(images.hits);
   refs.imagesList.insertAdjacentHTML("beforeend", makrup);
+}
+
+function scroll(top) {
+  window.scrollTo({
+    top: top,
+    behavior: "smooth",
+  });
 }

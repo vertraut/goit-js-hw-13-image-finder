@@ -1,7 +1,6 @@
 import ApiServices from "./api-services";
 import refs from "./refs";
 import imagesHbs from "../tamplate/images.hbs";
-import * as basicLightbox from "basiclightbox";
 
 const searchImages = new ApiServices();
 

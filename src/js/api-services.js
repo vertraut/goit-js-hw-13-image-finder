@@ -11,8 +11,8 @@ export default class ApiServices {
     const BASE_URL = `https://pixabay.com/api/`;
     this.url = `${BASE_URL}?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=${this.perPage}&key=${API_KEY}`;
     console.log(this.url);
-    const responce = fetch(this.url);
-    const images = await (await responce).json();
+    const responce = await fetch(this.url);
+    const images = await responce.json();
     return images;
   }
 

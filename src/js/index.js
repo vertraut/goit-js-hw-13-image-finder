@@ -18,16 +18,25 @@ async function newSearch(e) {
   searchImages.numPage = 1;
   searchImages.searchQuery = refs.inputQuery.value;
   console.log("Поиск картинок по запросу", searchImages.searchQuery);
-  await searchImages.fetchImages().then(appendImages);
-  showMoreEnable();
+  getImages();
 }
 
 async function showMore() {
   searchImages.numPage += 1;
   console.log(searchImages.page);
   const heigthToScroll = refs.imagesList.clientHeight; //запоминаем высоту списка с картинками до добавления новых
-  await searchImages.fetchImages().then(appendImages);
+  await getImages();
   scroll(heigthToScroll); //скролим на начало новых картинок
+}
+
+async function getImages() {
+  const images = await searchImages.fetchImages();
+  appendImages(images.hits);
+  if (images.hits.length < searchImages.perPage) {
+    showMoreDisable();
+    return;
+  }
+  showMoreEnable();
 }
 
 function showMoreEnable() {
@@ -43,8 +52,8 @@ function clearMakrup() {
 }
 
 function appendImages(images) {
-  console.log(images.hits);
-  const makrup = imagesHbs(images.hits);
+  console.log(images);
+  const makrup = imagesHbs(images);
   refs.imagesList.insertAdjacentHTML("beforeend", makrup);
 }
 

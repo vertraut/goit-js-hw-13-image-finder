@@ -11,26 +11,23 @@ function addEvents() {
   refs.showMore.addEventListener("click", showMore);
 }
 
-function newSearch(e) {
+async function newSearch(e) {
   e.preventDefault();
-  showMoreDisable(); //чтобы кнеопка "показать больше" была скрыта при повтором поиске
+  showMoreDisable(); //чтобы кнопка "показать больше" была скрыта при повтором поиске
   clearMakrup(); // удаляем старые результаты поиска
   searchImages.numPage = 1;
   searchImages.searchQuery = refs.inputQuery.value;
   console.log("Поиск картинок по запросу", searchImages.searchQuery);
-  searchImages.fetchImages().then(appendImages).then(showMoreEnable);
+  await searchImages.fetchImages().then(appendImages);
+  showMoreEnable();
 }
 
-function showMore() {
+async function showMore() {
   searchImages.numPage += 1;
   console.log(searchImages.page);
   const heigthToScroll = refs.imagesList.clientHeight; //запоминаем высоту списка с картинками до добавления новых
-  searchImages
-    .fetchImages()
-    .then(appendImages)
-    .then(() => {
-      scroll(heigthToScroll); //скролим на начало новых картинок
-    });
+  await searchImages.fetchImages().then(appendImages);
+  scroll(heigthToScroll); //скролим на начало новых картинок
 }
 
 function showMoreEnable() {
